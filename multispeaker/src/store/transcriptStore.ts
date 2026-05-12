@@ -10,6 +10,7 @@ interface TranscriptState {
   searchQuery: string
   mutedRoles: Record<SpeakerRole, boolean>
   rolePriority: SpeakerRole[]
+  isPriorityEnabled: boolean
   connect: () => void
   disconnect: () => void
   reconnect: () => void
@@ -17,6 +18,7 @@ interface TranscriptState {
   setSearchQuery: (value: string) => void
   toggleRoleMute: (role: SpeakerRole) => void
   setRolePriority: (priority: SpeakerRole[]) => void
+  togglePriorityEnabled: () => void
   receiveMessage: (message: TranscriptMessage) => void
   editTranscript: (id: string, text: string) => void
 }
@@ -48,6 +50,19 @@ const loadRolePriority = (): SpeakerRole[] => {
   }
 }
 
+const loadPriorityEnabled = (): boolean => {
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  const raw = window.localStorage.getItem('priorityEnabled')
+  if (!raw) {
+    return false
+  }
+
+  return raw === 'true'
+}
+
 export const useTranscriptStore = create<TranscriptState>((set, get) => ({
   transcripts: [],
   connectionStatus: 'disconnected',
@@ -58,6 +73,7 @@ export const useTranscriptStore = create<TranscriptState>((set, get) => ({
     return acc
   }, {} as Record<SpeakerRole, boolean>),
   rolePriority: loadRolePriority(),
+  isPriorityEnabled: loadPriorityEnabled(),
   connect: () => {
     if (get().connectionStatus === 'connected') {
       return
@@ -98,6 +114,14 @@ export const useTranscriptStore = create<TranscriptState>((set, get) => ({
     }
     set({ rolePriority: priority })
   },
+  togglePriorityEnabled: () =>
+    set((state) => {
+      const next = !state.isPriorityEnabled
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('priorityEnabled', String(next))
+      }
+      return { isPriorityEnabled: next }
+    }),
   receiveMessage: (message) =>
     set((state) => {
       if (state.isPaused) {

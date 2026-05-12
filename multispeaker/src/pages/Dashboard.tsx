@@ -15,6 +15,7 @@ export default function Dashboard() {
   const searchQuery = useTranscriptStore((state) => state.searchQuery)
   const editTranscript = useTranscriptStore((state) => state.editTranscript)
   const rolePriority = useTranscriptStore((state) => state.rolePriority)
+  const isPriorityEnabled = useTranscriptStore((state) => state.isPriorityEnabled)
 
   const filtered = useMemo(() => {
     if (!searchQuery) {
@@ -41,6 +42,11 @@ export default function Dashboard() {
   }, [transcripts])
 
   const ordered = useMemo(() => {
+    if (!isPriorityEnabled) {
+      return [...filtered].sort(
+        (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+      )
+    }
     const priorityIndex = new Map(rolePriority.map((role, index) => [role, index]))
     return [...filtered].sort((a, b) => {
       const rankA = priorityIndex.get(a.role) ?? 999
@@ -50,7 +56,7 @@ export default function Dashboard() {
       }
       return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     })
-  }, [filtered, rolePriority])
+  }, [filtered, isPriorityEnabled, rolePriority])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#faf8f3] via-[#f5f2e8] to-[#f0ead6] text-[#5a4a3a]">
