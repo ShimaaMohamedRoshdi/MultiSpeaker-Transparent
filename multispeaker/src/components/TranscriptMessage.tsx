@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { TranscriptMessage as TranscriptMessageType } from '../types/transcript'
 import { ROLE_MAP, SPEAKER_MAP } from '../utils/speakers'
 import { highlightText } from '../utils/highlight'
@@ -15,10 +15,12 @@ function formatTime(timestamp: string) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
-export default function TranscriptMessage({ item, query, onEdit }: TranscriptMessageProps) {
+function TranscriptMessage({ item, query, onEdit }: TranscriptMessageProps) {
   const speaker = SPEAKER_MAP[item.speakerId]
   const role = ROLE_MAP[item.role]
   const [isEditing, setIsEditing] = useState(false)
+  const editableRef = useRef<HTMLDivElement | null>(null)
+  const draftTextRef = useRef(item.text)
 
   const highlight = useMemo(() => {
     if (isEditing || !query) {
@@ -27,15 +29,19 @@ export default function TranscriptMessage({ item, query, onEdit }: TranscriptMes
     return highlightText(item.text, query)
   }, [isEditing, item.text, query])
 
-  const handleInput = useCallback(
-    (event: React.FormEvent<HTMLDivElement>) => {
-      const nextText = event.currentTarget.textContent ?? ''
-      if (nextText !== item.text) {
-        onEdit(item.id, nextText)
+  useEffect(() => {
+    if (isEditing) {
+      draftTextRef.current = item.text
+      if (editableRef.current) {
+        editableRef.current.textContent = item.text
+        editableRef.current.focus()
       }
-    },
-    [item.id, item.text, onEdit],
-  )
+    }
+  }, [isEditing, item.text])
+
+  const handleInput = useCallback((event: React.FormEvent<HTMLDivElement>) => {
+    draftTextRef.current = event.currentTarget.textContent ?? ''
+  }, [])
 
   const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
@@ -43,6 +49,14 @@ export default function TranscriptMessage({ item, query, onEdit }: TranscriptMes
       event.currentTarget.blur()
     }
   }, [])
+
+  const handleBlur = useCallback(() => {
+    const nextText = editableRef.current?.textContent ?? ''
+    if (nextText !== item.text) {
+      onEdit(item.id, nextText)
+    }
+    setIsEditing(false)
+  }, [item.id, item.text, onEdit])
 
   return (
     <article className="animate-float-in rounded-[28px] border border-amber-200 bg-white p-6 shadow-[0_20px_45px_rgba(139,69,19,0.12)]">
@@ -72,9 +86,10 @@ export default function TranscriptMessage({ item, query, onEdit }: TranscriptMes
           <div
             contentEditable
             suppressContentEditableWarning
+            ref={editableRef}
             onInput={handleInput}
             onKeyDown={handleKeyDown}
-            onBlur={() => setIsEditing(false)}
+            onBlur={handleBlur}
             role="textbox"
             aria-label="محضر قابل للتعديل"
           >
@@ -93,3 +108,5 @@ export default function TranscriptMessage({ item, query, onEdit }: TranscriptMes
     </article>
   )
 }
+
+export default memo(TranscriptMessage)

@@ -18,7 +18,7 @@ export const SPEAKER_ROLES: Array<{
 export const SPEAKERS: Speaker[] = [
   {
     id: 1,
-    name: 'Justice Hala Mansour',
+    name: 'المستشارة هالة منصور',
     role: 'Judge',
     roleLabel: 'القاضي',
     color: '#f8c06d',
@@ -26,7 +26,7 @@ export const SPEAKERS: Speaker[] = [
   },
   {
     id: 2,
-    name: 'Noura Hassan',
+    name: 'نورة حسن',
     role: 'Prosecutor',
     roleLabel: 'النيابة',
     color: '#fb7185',
@@ -34,7 +34,7 @@ export const SPEAKERS: Speaker[] = [
   },
   {
     id: 3,
-    name: 'Omar Said',
+    name: 'عمر سعيد',
     role: 'Defendant',
     roleLabel: 'المتهم',
     color: '#38bdf8',
@@ -42,7 +42,7 @@ export const SPEAKERS: Speaker[] = [
   },
   {
     id: 4,
-    name: 'Yara Abdallah',
+    name: 'يارا عبد الله',
     role: 'Lawyer',
     roleLabel: 'المحامي',
     color: '#a78bfa',
@@ -50,7 +50,7 @@ export const SPEAKERS: Speaker[] = [
   },
   {
     id: 5,
-    name: 'Mahmoud Salem',
+    name: 'محمود سالم',
     role: 'Witnesses',
     roleLabel: 'الشهود',
     color: '#34d399',
@@ -58,7 +58,7 @@ export const SPEAKERS: Speaker[] = [
   },
   {
     id: 6,
-    name: 'Dr. Lina Farouk',
+    name: 'د. لينا فاروق',
     role: 'Experts',
     roleLabel: 'الخبراء',
     color: '#facc15',
@@ -66,7 +66,7 @@ export const SPEAKERS: Speaker[] = [
   },
   {
     id: 7,
-    name: 'Karim Abdelrahman',
+    name: 'كريم عبد الرحمن',
     role: 'CivilPlaintiff',
     roleLabel: 'المدعي بالحق المدني',
     color: '#fb923c',
