@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background: radial-gradient(circle at top, #fdf4e3 0%, #f7f1e1 45%),
+      linear-gradient(120deg, rgba(224, 122, 95, 0.12), transparent 50%);
+    color: #2f2b26;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: rgba(224, 122, 95, 0.35);
+    color: #2f2b26;
+  }
+
+  mark {
+    background: rgba(224, 122, 95, 0.25);
+    color: #2f2b26;
+    padding: 0 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-slate::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .scrollbar-slate::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-slate::-webkit-scrollbar-thumb {
+    background-color: rgba(61, 64, 91, 0.35);
+    border-radius: 999px;
+  }
+
+  .no-print {
+    display: block;
+  }
+
+  .print-only {
+    display: none;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+    color: #0f172a;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  .print-only {
+    display: block;
+  }
+}
